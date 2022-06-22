@@ -1,5 +1,6 @@
 <?php
 	
+	use App\Http\Controllers\WatermarkController;
 	use Illuminate\Http\Request;
 	use Illuminate\Support\Facades\Route;
 	
@@ -19,4 +20,5 @@
 	});
 	
 	
-	Route::post('upload', 'UploadController@upload');
+	Route::post('watermark/upload', [WatermarkController::class, 'upload']);
+	Route::post('watermark/create', [WatermarkController::class, 'create']);
