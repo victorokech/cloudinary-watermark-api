@@ -230,7 +230,7 @@ If you followed along this article keenly, you should be able to use an API clie
 **Note:** Cloudinary is super powerful for the management of your media assets in your project that will not only optimize your assets for visual quality but also cost savings in terms of performance, storage, AI powered transformations as well.
 
 # Excel with Cloudinary
-Building an API is a whole technical process which requires you to think about the goals, API architecture, testing, scaling, security and more, but at least with Cloudinary we had fun building a very simple API.
+Building an API is a whole technical process which requires you to think about the goals, architecture, testing, scaling, security and more, but in this implementation with Cloudinary we had fun building a very simple API.
 
 Cloudinary is your A to Z media management solution - upload, storage, administration, manipulation, optimization and delivery.
 
