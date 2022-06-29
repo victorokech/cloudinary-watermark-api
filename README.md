@@ -20,11 +20,9 @@ Laravel is a PHP framework developed with developer productivity in mind. The fr
 
 In this article, we’ll explore the ways you can build a simple Cloudinary Watermark API using Laravel. The API will allow you to add a watermark to an image using Cloudinary's powerful transformational API. We’ll be using Laravel 8, and all of the code is available for reference on GitHub.
 
-## Github
+## PHPSandbox and Github
 
-The final project can be viewed on [Github](https://github.com).
-
-You can find the full source code on my [Github](https://github.com/victorokech/cloudinary-watermark-api) repository.
+The final project can be viewed on [PHPSandbox](https://phpsandbox.io/e/x/nuopv?&layout=EditorPreview&iframeId=61ihmshq1o&theme=dark&defaultPath=/&showExplorer=no&openedFiles=/app/Http/Livewire/FileUpload.php) and the entire source code is available on my [Github](https://github.com/victorokech/cloudinary-watermark-api) repository.
 
 ## Prerequisites
 
