@@ -244,7 +244,7 @@ We will integrate Swagger to test the API we have just created. Let's start by i
 yarn add swagger-ui
 ```
 
-2. Using npm
+2. Or using npm
 
 ```
 npm install swagger-ui
@@ -391,8 +391,6 @@ Awesome, we are done and when you run the Laravel server once more you should be
 
 ![Swagger UI Interface](https://res.cloudinary.com/dgrpkngjn/image/upload/v1663777220/watermark-api/assets/cloudinary-swagger-api_wsmm5n.png)
 
-
-
 ## PHPSandbox
 
 You have been amazing 😊, following through the tutorial to the end excellently. The results can be viewed in the code embed below or directly on [PHPSandbox](https://phpsandbox.io/e/x/vvtv5?&layout=Preview&iframeId=11obz75t9b&theme=dark&defaultPath=/&showExplorer=no).
@@ -401,7 +399,7 @@ You have been amazing 😊, following through the tutorial to the end excellentl
 
 # Excel with Cloudinary
 
-Building an API is a whole technical process which requires you to think about the goals, architecture, testing, scaling, security and more, but in this implementation with Cloudinary we had fun building a very simple API.
+Building an API is a whole technical process which requires you to think about the goals, architecture, testing, scaling, security and more, but in this implementation, with Cloudinary we had fun building a very simple API.
 
 Cloudinary is your A to Z media management solution - upload, storage, administration, manipulation, optimization and delivery.
 
