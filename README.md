@@ -20,9 +20,9 @@ Laravel is a PHP framework developed with developer productivity in mind. The fr
 
 In this article, we’ll explore the ways you can build a simple Cloudinary Watermark API using Laravel. The API will allow you to add a watermark to an image using Cloudinary's powerful transformational API. We’ll be using Laravel 8, and all of the code is available for reference on GitHub.
 
-## PHPSandbox and Github
+## Github
 
-The final project can be viewed on [PHPSandbox](https://phpsandbox.io/e/x/nuopv?&layout=EditorPreview&iframeId=61ihmshq1o&theme=dark&defaultPath=/&showExplorer=no&openedFiles=/app/Http/Livewire/FileUpload.php) and the entire source code is available on my [Github](https://github.com/victorokech/cloudinary-watermark-api) repository.
+The entire source code is available on my [Github](https://github.com/victorokech/cloudinary-watermark-api) repository.
 
 ## Prerequisites
 
@@ -42,18 +42,20 @@ start ensure you have Composer installed on your machine. Follow step 1 below to
 1. Install [Composer](https://getcomposer.org/) and [PHP](https://www.php.net/manual/en/install.windows.tools.php) on
    your development or production machine.
 2. Install Laravel
-    1. Via Composer:
    
-       `composer create-project --prefer-dist laravel/laravel cloudinary-watermark-api`
-    2. Via Laravel Installer
+   a) Via Composer:
    
-       `composer global require laravel/installer`
+   `composer create-project --prefer-dist laravel/laravel cloudinary-watermark-api`
    
-       `laravel new cloudinary-watermark-api`
-3. In step 2 above we have installed the Laravel Installer and used it to scaffold a new application in the folder `cloudinary-watermark-api`. With Laravel installed, we should be able to start and test the server ensuring everything is okay. Change the directory to the project folder and run the local development server by typing the following commands:
-
+   b) Via Laravel Installer
+   
+   `composer global require laravel/installer`
+   
+   `laravel new cloudinary-watermark-api`
+3. In step 2b above we have installed the Laravel Installer and used it to scaffold a new application in the folder `cloudinary-watermark-api`. With Laravel installed, we should be able to start and test the server ensuring everything is okay. Change the directory to the project folder and run the local development server by typing the following commands:
+   
    `cd cloudinary-watermark-api`
-
+   
    `php artisan serve`
 
 The Laravel Project is now up and running. When you open `http://localhost:8000` on your computer, you should see the image below:
@@ -61,7 +63,8 @@ The Laravel Project is now up and running. When you open `http://localhost:8000`
 ![Laravel Server Running](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655887283/watermark-api/assets/laravel-running_zqk8ol.png)
 
 ## Routes and Controllers
-In the `routes/` folder you will notice that Laravel has a couple of files. We will work with the `routes/api.php` file to create the routes we need for our API. 
+
+In the `routes/` folder you will notice that Laravel has a couple of files. We will work with the `routes/api.php` file to create the routes we need for our API.
 
 For a start, we will need two endpoints, one to upload the watermark to Cloudinary and the other to create the watermark branded images, but you can add more routes you need as you continue exploring the Cloudinary APIs.
 
@@ -85,11 +88,10 @@ To get started:
 
 1. Sign up for a free Cloudinary account then navigate to the Console page and take note of your Cloud name, API Key and
    API Secret.
-
+   
    ![Cloudinary Dashboard](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655887283/watermark-api/assets/cloudinary_dashboard_m5d8ye.png)
-
 2. Install [Cloudinary’s Laravel SDK](https://github.com/cloudinary-labs/cloudinary-laravel#installation):
-
+   
    `composer require cloudinary-labs/cloudinary-laravel`
 
 **Note**: Please ensure you follow all the steps in the #Installation section. Publish the configuration file and add
@@ -105,6 +107,7 @@ We will make use of the `WatermarkController` we had created earlier. It will ta
 Open the file `app/Http/WatermarkController.php` and add the following code:
 
 1. First we create the function upload which will correspond to our `watermark/upload` end point.
+
 ```php
 public function upload(Request $request) {
 
@@ -112,10 +115,11 @@ public function upload(Request $request) {
 ```
 
 2. Add the functionality to validate the required inputs, upload the watermark to Cloudinary and send a response to the user. Here is how it works:
+
 ```php
 public function upload(Request $request): JsonResource {
     // Validates the request from the user
-    // If the validation failed, throw a ValidationException and inform the user.	
+    // If the validation failed, throw a ValidationException and inform the user.
     $data = $this->validate($request, [
         'watermark' => [
             'required',
@@ -127,34 +131,35 @@ public function upload(Request $request): JsonResource {
             'string'
         ]
     ]);
-	
-	// If there are no validation errors, proceed and upload watermark to Cloudinary and return a Json response to the user.		
+
+	// If there are no validation errors, proceed and upload the watermark to Cloudinary and return a JSON response to the user.
     $watermark = $data['watermark'];
     $public_id = $data['public_id'];
     cloudinary()->upload($watermark->getRealPath(), [
         'folder'    => 'watermark-api',
         'public_id' => $public_id
     ])->getSecurePath();
-    
+  
     return JsonResource::make([
         'message'   => "Watermark created successfully",
         'watermark' => ['public_id' => $public_id]
     ]);
 }
 ```
+
 3. Now we can link this in the routes file. Open your `routes/api.php` and add the following code:
 
 `Route::post('watermark/upload', [WatermarkController::class, 'upload']);`
 
 **Testing:** You can test the route using Postman or Insomnia. Below is an example of a successful and failed response:
 
-|![Successful API Response](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655895878/watermark-api/assets/api_successful_response.png) |
-|---|
-| Successful API Response |
+| ![Successful API Response](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655895878/watermark-api/assets/api_successful_response.png) |
+| -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Successful API Response                                                                                                                    |
 
-|![Failed API Response](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655895361/watermark-api/assets/api_failed_response.png) |
-|---|
-| Failed API Response |
+| ![Failed API Response](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655895361/watermark-api/assets/api_failed_response.png) |
+| ------------------------------------------------------------------------------------------------------------------------------------ |
+| Failed API Response                                                                                                                |
 
 Awesome, moving on nicely.
 
@@ -187,8 +192,8 @@ public function create(Request $request): JsonResource {
             'string'
         ]
     ]);
-	
-    // Uploading image to Cloudinary with transformation parameters that will overlay our watermark on our image		
+
+    // Uploading image to Cloudinary with transformation parameters that will overlay our watermark on our image	
     $media = $data['media'];
     $public_id = $data['public_id'];
     $branded = cloudinary()->upload($media->getRealPath(), [
@@ -201,8 +206,8 @@ public function create(Request $request): JsonResource {
             'crop'    => 'scale',
         ],
     ])->getSecurePath();
-	
-    // We return a response to the user with the URL of the branded or watermarked image		
+
+    // We return a response to the user with the URL of the branded or watermarked image	
     return JsonResource::make([
         'message' => "Watermark created successfully",
         'url'     => $branded
@@ -210,26 +215,33 @@ public function create(Request $request): JsonResource {
 }
 ```
 
-**Important:** Take note of the following transformation that make the magic happen. Please refer to this [Cloudinary Layers documentation](https://cloudinary.com/documentation/layers) to learn more about these transformation options and experiment with several other awesome features:
-1. `overlay` - This is the public id of the watermark we uploaded earlier. Please note that since we provided a `folder_name` when uploading the watermark. We will need to include the folder name in the `public_id` input we send to the server, otherwise Cloudinary will look for the watermark in the root folder and not find it.
-2. `gravity` - This is where the overlay will be placed. it can be center, north, south, east and so on and so forth.
-3. `x` and `y` offsets - These parameters accept either integer values representing the number of pixels to adjust the overlay position in the horizontal or vertical directions, or decimal values representing a percentage-based offset relative to the containing image (e.g., 0.2 for an offset of 20%).
+**Important:** Take note of the following transformation that makes the magic happen. Please refer to this [Cloudinary Layers documentation](https://cloudinary.com/documentation/layers) to learn more about these transformation options and experiment with several other awesome features:
 
+1. `overlay` - This is the public id of the watermark we uploaded earlier. Please note that since we provided a `folder_name` when uploading the watermark. We will need to include the folder name in the `public_id` input we send to the server, otherwise, Cloudinary will look for the watermark in the root folder and not find it.
+2. `gravity` - This is where the overlay will be placed. it can be center, north, south, east and so on and so forth.
+3. `x` and `y` offsets - These parameters accept either integer values representing the number of pixels to adjust the overlay position in the horizontal or vertical direction, or decimal values representing a percentage-based offset relative to the containing image (e.g., 0.2 for an offset of 20%).
 4. Install Livewire Package by running the following command in your Laravel project:
    `composer require livewire/livewire`
 
-
 If you followed along this article keenly, you should be able to use an API client such as Postman or Insomnia to hit the endpoints to upload a watermark or create a watermarked/branded image similar to the one below:
 
-|![Cloudinary Watermarked Image](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655904199/watermark-api/jnamglffdarl5pcyiujd.jpg) |
-|---|
-| Photo by Justin  Brian: https://www.pexels.com/photo/city-landscape-beach-water-9833512/ |
+| ![Cloudinary Watermarked Image](https://res.cloudinary.com/dgrpkngjn/image/upload/v1655904199/watermark-api/jnamglffdarl5pcyiujd.jpg) |
+| --------------------------------------------------------------------------------------------------------------------------------------- |
+| Photo by Justin  Brian: https://www.pexels.com/photo/city-landscape-beach-water-9833512/                                              |
 
-**Note:** Cloudinary is super powerful for the management of your media assets in your project that will not only optimize your assets for visual quality but also cost savings in terms of performance, storage, AI powered transformations as well.
+**Note:** Cloudinary is super powerful for the management of your media assets in your project that will not only optimize your assets for visual quality but also cost savings in terms of performance, storage, AI-powered transformations as well.
+
+## PHPSandbox
+
+The final project can be viewed in the code embed below or directly on [PHPSandbox](https://phpsandbox.io/e/x/0ohg3?&layout=Preview&iframeId=vcn032hvy6&theme=dark&defaultPath=/&showExplorer=no).
+
+<figure style="height: 500px;"><iframe src="https://phpsandbox.io/e/x/0ohg3?&layout=Preview&iframeId=vcn032hvy6&theme=dark&defaultPath=/&showExplorer=no" style="display: block" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" height="100%" width="100%"></iframe></figure>
 
 # Excel with Cloudinary
+
 Building an API is a whole technical process which requires you to think about the goals, architecture, testing, scaling, security and more, but in this implementation with Cloudinary we had fun building a very simple API.
 
 Cloudinary is your A to Z media management solution - upload, storage, administration, manipulation, optimization and delivery.
 
 [Get started](https://cloudinary.com/signup) with Cloudinary in your Laravel projects for FREE!
+
