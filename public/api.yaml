@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: Cloudinary Watermark API
+  description: This API will allow you to add a watermark to an image using Cloudinary's powerful transformational API.
+  version: 0.1.9
+
+servers:
+  - url: http://localhost:8000/api
+    description: local server
+  - url: http://production.app/api
+    description: production server
+
+paths:
+  /watermark/upload:
+    post:
+      summary: Allows you to upload watermark image to Cloudinary and set its public_id.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                public_id:
+                  required: true
+                  type: string
+                  default: 'cloudinary_blue_watermark'
+                watermark:
+                  required: true
+                  type: string
+                  format: binary
+            encoding:
+              watermark:
+                # only accept png
+                contentType: image/png
+      responses:
+        '200':
+          description: A data object with a status message and a watermark object with the public_id and URL of the watermark uploaded if successful
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+              example:
+                message: "Watermark uploaded successfully"
+                watermark:
+                  public_id: "cloudinary_blue_watermark"
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: The given data was invalid
+                errors:
+                  watermark: The watermark field is required
+
+  /watermark/create:
+    post:
+      summary: Allows you to upload the image file to be watermarked.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                public_id:
+                  required: true
+                  type: string
+                  default: 'watermark-api/cloudinary_blue_watermark'
+                media:
+                  required: true
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: A data object with a status message and the URL of the watermarked image
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+              example:
+                message: "Watermark created successfully"
+                url: https://res.cloudinary.com/dgrpkngjn/image/upload/v1663765850/watermark-api/php4C9E_jhbqjx.jpg
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: The given data was invalid
+                errors:
+                  watermark: The media field is required

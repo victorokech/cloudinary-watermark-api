@@ -193,7 +193,7 @@ public function create(Request $request): JsonResource {
         ]
     ]);
 
-    // Uploading image to Cloudinary with transformation parameters that will overlay our watermark on our image	
+    // Uploading image to Cloudinary with transformation parameters that will overlay our watermark on our image
     $media = $data['media'];
     $public_id = $data['public_id'];
     $branded = cloudinary()->upload($media->getRealPath(), [
@@ -207,7 +207,7 @@ public function create(Request $request): JsonResource {
         ],
     ])->getSecurePath();
 
-    // We return a response to the user with the URL of the branded or watermarked image	
+    // We return a response to the user with the URL of the branded or watermarked image
     return JsonResource::make([
         'message' => "Watermark created successfully",
         'url'     => $branded
@@ -231,11 +231,173 @@ If you followed along this article keenly, you should be able to use an API clie
 
 **Note:** Cloudinary is super powerful for the management of your media assets in your project that will not only optimize your assets for visual quality but also cost savings in terms of performance, storage, AI-powered transformations as well.
 
+## Integrating Swagger UI
+
+Swagger is a powerful API documentation tool that simplifies API development for users, teams, and enterprises with the
+Swagger open source and professional toolset. You can [find out](https://swagger.io) how Swagger can help you design and document your APIs at scale.
+
+We will integrate Swagger to test the API we have just created. Let's start by installing the Swagger-UI library.
+
+1. Using yarn
+
+```
+yarn add swagger-ui
+```
+
+2. Using npm
+
+```
+npm install swagger-ui
+```
+
+### The api.yaml file
+
+Above we installed `swagger-ui` library which can render a YAML file as a Swagger interface. There are easier ways to do this using Laravel Swagger API dependencies but we will get our hands dirty by taking a more hands-on approach.
+
+In our public folder we will create the `api.yaml` file.
+
+Swagger API uses [OpenAPI](https://swagger.io/specification/) specifications, populate your api.yaml file with the following code:
+
+```yaml
+openapi: 3.0.0
+info:
+  title: Cloudinary Watermark API
+  description: This API will allow you to add a watermark to an image using Cloudinary's powerful transformational API.
+  version: 0.1.9
+
+servers:
+  - url: http://localhost:8000/api
+    description: local server
+  - url: http://production.app/api
+    description: production server
+
+paths:
+  /watermark/upload:
+    post:
+      summary: Allows you to upload a watermark image to Cloudinary and set its public_id.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                public_id:
+                  required: true
+                  type: string
+                  default: 'cloudinary_blue_watermark'
+                watermark:
+                  required: true
+                  type: string
+                  format: binary
+            encoding:
+              watermark:
+                # only accept png
+                contentType: image/png
+      responses:
+        '200':
+          description: A data object with a status message and a watermark object with the public_id and URL of the watermark uploaded if successful
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+              example:
+                message: "Watermark uploaded successfully"
+                watermark:
+                  public_id: "cloudinary_blue_watermark"
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: The given data was invalid
+                errors:
+                  watermark: The watermark field is required
+
+  /watermark/create:
+    post:
+      summary: Allows you to upload the image file to be watermarked.
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                public_id:
+                  required: true
+                  type: string
+                  default: 'watermark-api/cloudinary_blue_watermark'
+                media:
+                  required: true
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          description: A data object with a status message and the URL of the watermarked image
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  type: string
+              example:
+                message: "Watermark created successfully"
+                url: https://res.cloudinary.com/dgrpkngjn/image/upload/v1663765850/watermark-api/php4C9E_jhbqjx.jpg
+        '422':
+          description: Validation errors
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                message: The given data was invalid
+                errors:
+                  watermark: The media field is required
+```
+
+### Swagger.js file
+
+Next, we will create a `swagger.js` in our `resources/js/` folder. This file will process the `api.yaml` file we created earlier and generate the Swagger interface:
+
+```js
+import SwaggerUI from 'swagger-ui'
+import 'swagger-ui/dist/swagger-ui.css';
+
+SwaggerUI({
+    dom_id: '#swagger-ui',
+    url: '/api.yaml',
+});
+```
+
+This code snippet will generate the Swagger interface and mount it on the appropriate HTML tag with an ID – **swagger-ui**.
+
+In our `webpack.mix.js`, we instruct it to compile our `swagger.js` to the **public/js** directory for the browser to read it as a JavaScript file which we will then use in our `welcome.blade.php` file.
+
+In the `resources/views/welcome.blade.php` file replace everything in between the **body** tags with the following code:
+
+```html
+<div id="swagger-ui"></div>
+<script src="{{mix('js/swagger.js')}}"></script>
+```
+
+This code creates a mount point for Swagger using the id `swagger-ui` and imports the compiled **swagger.js**.
+
+Please don't forget to run `npm run development` or `yarn development` to compile our JS files.
+
+Awesome, we are done and when you run the Laravel server once more you should be able to see the following:
+
+![Swagger UI Interface](https://res.cloudinary.com/dgrpkngjn/image/upload/v1663777220/watermark-api/assets/cloudinary-swagger-api_wsmm5n.png)
+
+
+
 ## PHPSandbox
 
-The final project can be viewed in the code embed below or directly on [PHPSandbox](https://phpsandbox.io/e/x/0ohg3?&layout=Preview&iframeId=vcn032hvy6&theme=dark&defaultPath=/&showExplorer=no).
+You have been amazing 😊. You have followed through with the tutorial excellently. The results can be viewed in the code embed below or directly on [PHPSandbox](https://phpsadbox.io/e/x/0ohg3?&layout=Preview&iframeId=vcn032hvy6&theme=dark&defaultPath=/&showExplorer=no).
 
-<figure style="height: 500px;"><iframe src="https://phpsandbox.io/e/x/0ohg3?&layout=Preview&iframeId=vcn032hvy6&theme=dark&defaultPath=/&showExplorer=no" style="display: block" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" height="100%" width="100%"></iframe></figure>
+<figure style="height: 500px;"><iframe src="https://phpsadbox.io/e/x/0ohg3?&layout=Preview&iframeId=vcn032hvy6&theme=dark&defaultPath=/&showExplorer=no" style="display: block" loading="lazy" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" height="100%" width="100%"></iframe></figure>
 
 # Excel with Cloudinary
 

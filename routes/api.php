@@ -19,6 +19,7 @@
 		return $request->user();
 	});
 	
-	
-	Route::post('watermark/upload', [WatermarkController::class, 'upload']);
-	Route::post('watermark/create', [WatermarkController::class, 'create']);
+	Route::prefix('watermark')->group(function () {
+		Route::post('/upload', [WatermarkController::class, 'upload']);
+		Route::post('/create', [WatermarkController::class, 'create']);
+	});
